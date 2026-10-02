@@ -1,0 +1,4206 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Music Schedule</title>
+
+  <style>
+/* =========================================================
+   MUSIC SCHEDULE — LIVE STAGE / BACKSTAGE THEME
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #070709;
+  --bg2: #0d0d12;
+
+  --card: rgba(18,18,24,.82);
+  --card2: rgba(25,25,33,.72);
+
+  --border: rgba(255,255,255,.09);
+  --border-light: rgba(255,255,255,.14);
+
+  --text: #f8fafc;
+  --muted: #8b8d98;
+
+  --purple: #8b5cf6;
+  --purple2: #a855f7;
+
+  --pink: #ec4899;
+  --orange: #f97316;
+
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #facc15;
+
+  --shadow:
+    0 20px 70px rgba(0,0,0,.45);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family:
+    Inter,
+    "Noto Sans Thai",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  color: var(--text);
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(139,92,246,.18),
+      transparent 25%
+    ),
+
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(236,72,153,.12),
+      transparent 25%
+    ),
+
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(249,115,22,.08),
+      transparent 30%
+    ),
+
+    linear-gradient(
+      180deg,
+      #070709 0%,
+      #09090c 50%,
+      #050506 100%
+    );
+
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   BACKGROUND LIGHTS
+========================================================= */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  filter: blur(100px);
+
+  pointer-events: none;
+}
+
+body::before {
+  left: -220px;
+  top: 25%;
+
+  background: rgba(139,92,246,.08);
+}
+
+body::after {
+  right: -220px;
+  top: 55%;
+
+  background: rgba(236,72,153,.06);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  min-height: 70px;
+
+  padding: 13px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  background:
+    rgba(7,7,9,.82);
+
+  border-bottom:
+    1px solid rgba(255,255,255,.08);
+
+  backdrop-filter:
+    blur(22px);
+
+  -webkit-backdrop-filter:
+    blur(22px);
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.35);
+}
+
+header h1 {
+  margin: 0;
+
+  font-size: 19px;
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: white;
+}
+
+header h1::after {
+  content: "LIVE";
+
+  font-size: 9px;
+  letter-spacing: 1px;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  color: #fecaca;
+
+  background:
+    rgba(239,68,68,.12);
+
+  border:
+    1px solid rgba(239,68,68,.25);
+
+  box-shadow:
+    0 0 15px rgba(239,68,68,.12);
+}
+
+.header-buttons,
+.admin-actions,
+.table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+button {
+  border: 1px solid rgba(255,255,255,.09);
+
+  border-radius: 9px;
+
+  padding: 9px 14px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  color: white;
+
+  transition:
+    transform .18s ease,
+    opacity .18s ease,
+    box-shadow .18s ease;
+}
+
+button:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background:
+    linear-gradient(
+      135deg,
+      #6d28d9,
+      #9333ea
+    );
+
+  box-shadow:
+    0 7px 25px rgba(139,92,246,.22);
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 10px 32px rgba(139,92,246,.38);
+}
+
+.btn-success {
+  background:
+    linear-gradient(
+      135deg,
+      #15803d,
+      #22c55e
+    );
+
+  box-shadow:
+    0 7px 25px rgba(34,197,94,.18);
+}
+
+.btn-danger {
+  background:
+    linear-gradient(
+      135deg,
+      #991b1b,
+      #dc2626
+    );
+}
+
+.btn-secondary {
+  background:
+    rgba(255,255,255,.055);
+
+  color:
+    #d1d5db;
+}
+
+.btn-secondary:hover {
+  background:
+    rgba(255,255,255,.09);
+}
+
+.btn-warning {
+  background:
+    linear-gradient(
+      135deg,
+      #b45309,
+      #f59e0b
+    );
+}
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+  width:
+    min(1180px, calc(100% - 32px));
+
+  margin: auto;
+
+  padding:
+    34px 0 80px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   TOP DATE / STATUS
+========================================================= */
+
+.date-box {
+  position: relative;
+  overflow: hidden;
+
+  padding: 25px 27px;
+
+  margin-bottom: 18px;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.065),
+      rgba(255,255,255,.025)
+    );
+
+  border:
+    1px solid var(--border);
+
+  box-shadow:
+    var(--shadow);
+
+  backdrop-filter:
+    blur(18px);
+}
+
+.date-box::before {
+  content: "";
+
+  position: absolute;
+
+  width: 160px;
+  height: 160px;
+
+  right: -70px;
+  top: -90px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(139,92,246,.20);
+
+  filter:
+    blur(25px);
+}
+
+.date-box h2 {
+  position: relative;
+
+  margin: 0 0 8px;
+
+  font-size: 21px;
+  font-weight: 900;
+
+  letter-spacing: -.3px;
+}
+
+.last-updated {
+  position: relative;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   CURRENT PLAYING — HERO STAGE
+========================================================= */
+
+.current-card {
+  position: relative;
+  overflow: hidden;
+
+  padding: 34px;
+
+  min-height: 235px;
+
+  margin-bottom: 36px;
+
+  border-radius: 24px;
+
+  border:
+    1px solid rgba(139,92,246,.28);
+
+  background:
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(168,85,247,.22),
+      transparent 32%
+    ),
+
+    radial-gradient(
+      circle at 20% 100%,
+      rgba(236,72,153,.10),
+      transparent 35%
+    ),
+
+    linear-gradient(
+      135deg,
+      #111116,
+      #171320,
+      #0e1020
+    );
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.current-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  right: -100px;
+  bottom: -170px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(168,85,247,.25);
+
+  box-shadow:
+    0 0 0 30px rgba(168,85,247,.025),
+    0 0 0 60px rgba(168,85,247,.02);
+}
+
+.current-card::after {
+  content: "♪  ♫  ♪  ♫";
+
+  position: absolute;
+
+  right: 30px;
+  top: 22px;
+
+  font-size: 18px;
+
+  letter-spacing: 12px;
+
+  color:
+    rgba(255,255,255,.06);
+
+  transform:
+    rotate(-8deg);
+}
+
+.current-label {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 14px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  color: #c4b5fd;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 1.3px;
+
+  text-transform: uppercase;
+
+  background:
+    rgba(139,92,246,.10);
+
+  border:
+    1px solid rgba(139,92,246,.20);
+}
+
+.current-musician {
+  position: relative;
+
+  max-width: 80%;
+
+  font-size:
+    clamp(30px, 6vw, 52px);
+
+  line-height: 1.05;
+
+  font-weight: 950;
+
+  letter-spacing: -1.5px;
+
+  margin-bottom: 14px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff,
+      #ddd6fe,
+      #c4b5fd
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+.current-venue,
+.current-time {
+  position: relative;
+
+  color: #a7a9b4;
+
+  font-size: 14px;
+
+  margin-top: 6px;
+}
+
+.current-time {
+  color: #e4e4e7;
+  font-weight: 700;
+}
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+main > h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 0 17px;
+
+  font-size: 21px;
+  font-weight: 900;
+}
+
+main > h2::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.10),
+      transparent
+    );
+}
+
+/* =========================================================
+   DAY SECTION
+========================================================= */
+
+.day-section {
+  margin-bottom: 20px;
+
+  overflow: hidden;
+
+  border-radius: 17px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  border:
+    1px solid rgba(255,255,255,.065);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.20);
+}
+
+.day-header {
+  position: relative;
+
+  padding: 18px 20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.055),
+      rgba(255,255,255,.025)
+    );
+
+  border-bottom:
+    1px solid rgba(255,255,255,.065);
+}
+
+.day-header.today {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(124,58,237,.38),
+      rgba(88,28,135,.22)
+    );
+
+  border-bottom:
+    1px solid rgba(139,92,246,.22);
+}
+
+.day-header.today::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #a855f7,
+      #ec4899
+    );
+
+  box-shadow:
+    0 0 15px rgba(168,85,247,.7);
+}
+
+.day-title {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.day-subtitle {
+  color: #777a86;
+
+  font-size: 11px;
+
+  margin-top: 5px;
+}
+
+.day-header.today .day-subtitle {
+  color: #ddd6fe;
+}
+
+/* =========================================================
+   SCHEDULE LIST
+========================================================= */
+
+.schedule-list {
+  display: grid;
+
+  gap: 8px;
+
+  padding: 9px;
+
+  background:
+    rgba(0,0,0,.18);
+}
+
+/* =========================================================
+   SCHEDULE CARD
+========================================================= */
+
+.schedule-card {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px 18px;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.025)
+    );
+
+  border:
+    1px solid rgba(255,255,255,.065);
+
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    border-color .18s ease;
+}
+
+.schedule-card:hover {
+  transform:
+    translateX(4px);
+
+  background:
+    rgba(255,255,255,.065);
+
+  border-color:
+    rgba(255,255,255,.12);
+}
+
+.schedule-card.playing {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(22,101,52,.24),
+      rgba(34,197,94,.055)
+    );
+
+  border-color:
+    rgba(34,197,94,.38);
+
+  box-shadow:
+    0 0 30px rgba(34,197,94,.06);
+}
+
+.schedule-card.playing::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 4px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #22c55e,
+      #86efac
+    );
+
+  box-shadow:
+    0 0 14px rgba(34,197,94,.8);
+
+  animation:
+    pulseBar 1.4s infinite;
+}
+
+@keyframes pulseBar {
+  0%,100% {
+    opacity: .45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.schedule-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-time {
+  font-size: 17px;
+  font-weight: 900;
+
+  color: #f4f4f5;
+
+  margin-bottom: 7px;
+}
+
+.schedule-musician {
+  font-size: 15px;
+  font-weight: 800;
+
+  color: #e4e4e7;
+}
+
+.schedule-venue {
+  color: #858894;
+
+  margin-top: 5px;
+
+  font-size: 13px;
+}
+
+.repeat-label {
+  display: inline-flex;
+
+  margin-top: 9px;
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  color: #c4b5fd;
+
+  background:
+    rgba(139,92,246,.09);
+
+  border:
+    1px solid rgba(139,92,246,.17);
+}
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-container {
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  white-space: nowrap;
+
+  border:
+    1px solid transparent;
+}
+
+.badge-playing {
+  color: #86efac;
+
+  background:
+    rgba(34,197,94,.11);
+
+  border-color:
+    rgba(34,197,94,.22);
+
+  box-shadow:
+    0 0 18px rgba(34,197,94,.08);
+}
+
+.badge-next,
+.badge-upcoming {
+  color: #93c5fd;
+
+  background:
+    rgba(59,130,246,.09);
+
+  border-color:
+    rgba(59,130,246,.18);
+}
+
+.badge-finished {
+  color: #717581;
+
+  background:
+    rgba(148,163,184,.06);
+
+  border-color:
+    rgba(148,163,184,.11);
+}
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty {
+  padding: 60px 20px;
+
+  text-align: center;
+
+  color: #717581;
+
+  border-radius: 15px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  border:
+    1px dashed rgba(255,255,255,.10);
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-container {
+  max-width: 420px;
+
+  margin: 80px auto;
+}
+
+.login-card {
+  position: relative;
+
+  padding: 32px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24,24,32,.90),
+      rgba(12,12,17,.90)
+    );
+
+  border:
+    1px solid rgba(255,255,255,.09);
+
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.55);
+
+  backdrop-filter:
+    blur(20px);
+}
+
+.login-card::before {
+  content: "🎚️";
+
+  display: block;
+
+  text-align: center;
+
+  font-size: 38px;
+
+  margin-bottom: 10px;
+
+  filter:
+    drop-shadow(
+      0 0 20px rgba(168,85,247,.35)
+    );
+}
+
+.login-card h2 {
+  margin: 0 0 25px;
+
+  text-align: center;
+
+  font-size: 24px;
+  font-weight: 900;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+
+  color: #a1a1aa;
+
+  font-weight: 800;
+
+  margin-bottom: 7px;
+
+  font-size: 11px;
+
+  letter-spacing: .4px;
+}
+
+input,
+select {
+  width: 100%;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  border-radius: 9px;
+
+  font-size: 13px;
+
+  background:
+    rgba(255,255,255,.045);
+
+  color: white;
+
+  outline: none;
+
+  transition:
+    border .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+
+input:hover,
+select:hover {
+  background:
+    rgba(255,255,255,.06);
+}
+
+input:focus,
+select:focus {
+  border-color:
+    rgba(139,92,246,.65);
+
+  background:
+    rgba(139,92,246,.045);
+
+  box-shadow:
+    0 0 0 3px rgba(139,92,246,.10);
+}
+
+select option {
+  background: #15151b;
+  color: white;
+}
+
+input::placeholder {
+  color: #555862;
+}
+
+.login-error {
+  color: #fca5a5;
+
+  font-size: 13px;
+
+  margin-bottom: 12px;
+
+  min-height: 20px;
+}
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+.admin-header,
+.admin-section {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(22,22,29,.84),
+      rgba(12,12,16,.76)
+    );
+
+  border:
+    1px solid rgba(255,255,255,.075);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.25);
+
+  backdrop-filter:
+    blur(15px);
+}
+
+.admin-header {
+  padding: 20px;
+
+  border-radius: 17px;
+
+  margin-bottom: 18px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+}
+
+.admin-header h2 {
+  margin: 0;
+
+  font-size: 21px;
+
+  font-weight: 900;
+}
+
+.admin-section {
+  padding: 22px;
+
+  border-radius: 17px;
+
+  margin-bottom: 18px;
+}
+
+.admin-section h3 {
+  margin: 0 0 18px;
+
+  font-size: 17px;
+
+  font-weight: 900;
+}
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap: 14px;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.admin-status {
+  font-size: 11px;
+
+  color: #6f727d;
+
+  margin-top: 6px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.admin-table-wrapper {
+  overflow-x: auto;
+
+  border-radius: 11px;
+
+  border:
+    1px solid rgba(255,255,255,.065);
+}
+
+.admin-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 850px;
+
+  background:
+    rgba(0,0,0,.16);
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom:
+    1px solid rgba(255,255,255,.055);
+
+  padding: 12px;
+
+  text-align: left;
+
+  font-size: 12px;
+}
+
+.admin-table th {
+  background:
+    rgba(255,255,255,.045);
+
+  color: #a1a1aa;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  letter-spacing: .5px;
+}
+
+.admin-table td {
+  color: #d4d4d8;
+}
+
+.admin-table tr:hover td {
+  background:
+    rgba(255,255,255,.025);
+}
+
+.small-btn {
+  padding: 6px 9px;
+
+  font-size: 10px;
+
+  border-radius: 7px;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050506;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272f;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f4a;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width:700px) {
+
+  header {
+    padding: 13px 15px;
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  header h1 {
+    font-size: 16px;
+  }
+
+  .header-buttons {
+    width: 100%;
+  }
+
+  .header-buttons button {
+    flex: 1;
+  }
+
+  .container {
+    width:
+      calc(100% - 18px);
+
+    padding-top: 20px;
+  }
+
+  .date-box {
+    padding: 20px;
+  }
+
+  .current-card {
+    padding: 25px 21px;
+
+    min-height: 215px;
+
+    border-radius: 20px;
+  }
+
+  .current-musician {
+    max-width: 100%;
+
+    font-size: 31px;
+  }
+
+  .current-card::after {
+    display: none;
+  }
+
+  .schedule-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 16px;
+  }
+
+  .schedule-card > div:last-child {
+    width: 100%;
+  }
+
+  .status-container {
+    justify-content: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .full {
+    grid-column: auto;
+  }
+
+  .admin-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .admin-actions {
+    width: 100%;
+  }
+
+  .admin-actions button {
+    flex: 1;
+  }
+
+  .admin-section {
+    padding: 16px;
+  }
+
+  main > h2 {
+    font-size: 19px;
+  }
+}
+
+@media (max-width:430px) {
+
+  .header-buttons {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .current-musician {
+    font-size: 27px;
+  }
+
+  .schedule-time {
+    font-size: 16px;
+  }
+
+  .schedule-musician {
+    font-size: 14px;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎵 MUSIC SCHEDULE</h1>
+
+  <div class="header-buttons">
+    <button
+      id="userButton"
+      class="btn-secondary hidden"
+      onclick="showUserPage()">
+      🏠 หน้าผู้ใช้
+    </button>
+
+    <button
+      id="adminButton"
+      class="btn-primary"
+      onclick="showLogin()">
+      🔐 Admin
+    </button>
+
+    <button
+      id="logoutButton"
+      class="btn-danger hidden"
+      onclick="logout()">
+      🚪 ออกจากระบบ
+    </button>
+  </div>
+</header>
+
+
+<!-- USER -->
+
+<main id="userPage" class="container">
+
+  <div class="date-box">
+    <h2 id="todayText">กำลังโหลด...</h2>
+
+    <div class="last-updated">
+      อัปเดตล่าสุด:
+      <span id="lastUpdated">-</span>
+    </div>
+  </div>
+
+  <section class="current-card">
+    <div class="current-label">
+  🔴 ON STAGE • NOW PLAYING
+</div>
+
+    <div
+      id="currentMusician"
+      class="current-musician">
+      กำลังโหลด...
+    </div>
+
+    <div
+      id="currentVenue"
+      class="current-venue">
+    </div>
+
+    <div
+      id="currentTime"
+      class="current-time">
+    </div>
+  </section>
+
+  <h2>🎸 UPCOMING GIGS</h2>
+
+  <div id="scheduleList"></div>
+
+</main>
+
+
+<!-- LOGIN -->
+
+<main id="loginPage" class="container hidden">
+
+  <div class="login-container">
+
+    <div class="login-card">
+
+      <h2>🔐 Admin Login</h2>
+
+      <div
+        id="loginError"
+        class="login-error">
+      </div>
+
+      <div class="form-group">
+        <label>Username</label>
+
+        <input
+          id="loginUsername"
+          type="text"
+          autocomplete="username"
+          placeholder="Username">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Password">
+      </div>
+
+      <button
+        id="loginButton"
+        class="btn-primary"
+        style="width:100%"
+        onclick="login()">
+        เข้าสู่ระบบ
+      </button>
+
+      <button
+        class="btn-secondary"
+        style="width:100%;margin-top:8px"
+        onclick="showUserPage()">
+        ← กลับหน้าผู้ใช้
+      </button>
+
+    </div>
+  </div>
+
+</main>
+
+
+<!-- ADMIN -->
+
+<main id="adminPage" class="container hidden">
+
+  <div class="admin-header">
+
+    <div>
+      <h2>🛠️ Admin Dashboard</h2>
+
+      <div
+        id="adminWelcome"
+        class="admin-status">
+      </div>
+    </div>
+
+    <div class="admin-actions">
+
+      <button
+        class="btn-secondary"
+        onclick="showUserPage()">
+        🏠 หน้าผู้ใช้
+      </button>
+
+      <button
+        class="btn-danger"
+        onclick="logout()">
+        🚪 Logout
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ADD SCHEDULE -->
+
+  <section class="admin-section">
+
+    <h3>➕ เพิ่มตาราง</h3>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+
+        <label>รูปแบบตาราง</label>
+
+        <select
+          id="scheduleRepeat">
+
+          <option value="weekly">
+            🔁 ทุกสัปดาห์
+          </option>
+
+          <option value="once">
+            📅 ครั้งเดียว
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>วันที่เริ่มต้น</label>
+
+        <input
+          id="scheduleDate"
+          type="date">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>นักดนตรี</label>
+
+        <select id="scheduleMusician">
+
+          <option value="">
+            -- เลือกนักดนตรี --
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>สถานที่</label>
+
+        <select id="scheduleVenue">
+
+          <option value="">
+            -- เลือกสถานที่ --
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>เวลาเริ่ม</label>
+
+        <input
+          id="scheduleStart"
+          type="time">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>เวลาจบ</label>
+
+        <input
+          id="scheduleEnd"
+          type="time">
+
+      </div>
+
+
+      <div class="form-group full">
+
+        <button
+          id="createScheduleButton"
+          class="btn-success"
+          onclick="createSchedule()">
+
+          ➕ เพิ่มตาราง
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ALL SCHEDULES -->
+
+  <section class="admin-section">
+
+    <h3>📅 ตารางทั้งหมด</h3>
+
+    <div class="admin-status">
+      🔄 ระบบ sync ข้อมูลทุก 30 วินาที
+    </div>
+
+    <div class="admin-table-wrapper">
+
+      <table class="admin-table">
+
+        <thead>
+
+          <tr>
+            <th>ID</th>
+            <th>วันที่เริ่ม</th>
+            <th>นักดนตรี</th>
+            <th>สถานที่</th>
+            <th>เวลา</th>
+            <th>รูปแบบ</th>
+            <th>จัดการ</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="adminScheduleTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADD MUSICIAN -->
+
+  <section class="admin-section">
+
+    <h3>🎤 เพิ่มนักดนตรี</h3>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+
+        <label>ชื่อ</label>
+
+        <input
+          id="musicianName"
+          type="text"
+          placeholder="เช่น Amarin">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>เครื่องดนตรี</label>
+
+        <input
+          id="musicianInstrument"
+          type="text"
+          placeholder="เช่น Guitar / Vocal">
+
+      </div>
+
+
+      <div class="form-group full">
+
+        <button
+          id="createMusicianButton"
+          class="btn-success"
+          onclick="createMusician()">
+
+          ➕ เพิ่มนักดนตรี
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MUSICIAN -->
+
+  <section class="admin-section">
+
+    <h3>🎤 นักดนตรี</h3>
+
+    <div class="admin-table-wrapper">
+
+      <table class="admin-table">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>ชื่อ</th>
+            <th>เครื่องดนตรี</th>
+          </tr>
+        </thead>
+
+        <tbody id="musicianTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADD VENUE -->
+
+  <section class="admin-section">
+
+    <h3>📍 เพิ่มสถานที่</h3>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+
+        <label>ชื่อสถานที่</label>
+
+        <input
+          id="venueName"
+          type="text"
+          placeholder="เช่น ABC Music Bar">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>ที่อยู่</label>
+
+        <input
+          id="venueAddress"
+          type="text"
+          placeholder="เช่น Phuket">
+
+      </div>
+
+
+      <div class="form-group full">
+
+        <button
+          id="createVenueButton"
+          class="btn-success"
+          onclick="createVenue()">
+
+          ➕ เพิ่มสถานที่
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- VENUE -->
+
+  <section class="admin-section">
+
+    <h3>📍 สถานที่</h3>
+
+    <div class="admin-table-wrapper">
+
+      <table class="admin-table">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>ชื่อ</th>
+            <th>ที่อยู่</th>
+          </tr>
+        </thead>
+
+        <tbody id="venueTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script>
+
+  /* =====================================================
+     CONFIG
+  ===================================================== */
+
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbx-B9qzEXadC4C1CAaVpHq1wp8aW9OVFNUQyxhpv2TnD5uLO8N0ftDPQWKCpfyESwrF/exec";
+
+  /*
+    จากเดิม 10 วินาที
+    เปลี่ยนเป็น 30 วินาที
+  */
+  const REFRESH_INTERVAL = 30000;
+
+  const DISPLAY_DAYS = 30;
+
+
+  /* =====================================================
+     APP DATA
+  ===================================================== */
+
+  let appData = {
+    schedules: [],
+    musicians: [],
+    venues: []
+  };
+
+  let isLoading = false;
+  let isSaving = false;
+  let lastRenderedDate = "";
+
+
+  /* =====================================================
+     START
+  ===================================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+      setupDefaultFormValues();
+
+      setTodayText();
+
+      await loadData(true);
+
+      checkLogin();
+
+      startRealtime();
+
+    }
+  );
+
+
+  /* =====================================================
+     REALTIME
+  ===================================================== */
+
+  function startRealtime() {
+
+    /*
+      ทุก 1 วินาที:
+      ไม่ render ตารางใหม่
+      เช็คเฉพาะสถานะเวลา
+    */
+
+    setInterval(() => {
+
+      setTodayText();
+
+      renderCurrentPlaying();
+
+      updateScheduleStatuses();
+
+    }, 1000);
+
+
+    /*
+      ทุก 30 วินาที:
+      sync Google Sheets
+    */
+
+    setInterval(async () => {
+
+      await loadData(false);
+
+    }, REFRESH_INTERVAL);
+
+  }
+
+
+  /* =====================================================
+     DATE
+  ===================================================== */
+
+  function getLocalDateString(date = new Date()) {
+
+    const year = date.getFullYear();
+
+    const month =
+      String(date.getMonth() + 1).padStart(2, "0");
+
+    const day =
+      String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+  }
+
+
+  function parseDate(dateString) {
+
+    if (!dateString) {
+      return new Date();
+    }
+
+    const parts =
+      String(dateString).split("-");
+
+    return new Date(
+      Number(parts[0]),
+      Number(parts[1]) - 1,
+      Number(parts[2])
+    );
+
+  }
+
+
+  function addDays(date, days) {
+
+    const result = new Date(date);
+
+    result.setDate(
+      result.getDate() + days
+    );
+
+    return result;
+
+  }
+
+
+  function formatThaiDate(dateString) {
+
+    return parseDate(dateString)
+      .toLocaleDateString("th-TH", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+  }
+
+
+  function setTodayText() {
+
+    const today =
+      new Date();
+
+    const text =
+      today.toLocaleDateString(
+        "th-TH",
+        {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }
+      );
+
+    document.getElementById(
+      "todayText"
+    ).textContent =
+      `📅 ${text}`;
+
+  }
+
+
+  function setupDefaultFormValues() {
+
+    document.getElementById(
+      "scheduleDate"
+    ).value =
+      getLocalDateString();
+
+  }
+
+
+  /* =====================================================
+     LOAD DATA
+  ===================================================== */
+
+  async function loadData(forceRender = false) {
+
+    if (isLoading) {
+      return;
+    }
+
+    isLoading = true;
+
+    try {
+
+      const response =
+        await fetch(
+          `${API_URL}?action=getAll`,
+          {
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP ${response.status}`
+        );
+      }
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+        throw new Error(
+          data.message ||
+          data.error ||
+          "API error"
+        );
+      }
+
+      appData.schedules =
+        Array.isArray(data.schedules)
+          ? data.schedules
+          : [];
+
+      appData.musicians =
+        Array.isArray(data.musicians)
+          ? data.musicians
+          : [];
+
+      appData.venues =
+        Array.isArray(data.venues)
+          ? data.venues
+          : [];
+
+      document.getElementById(
+        "lastUpdated"
+      ).textContent =
+        new Date()
+          .toLocaleTimeString("th-TH");
+
+      /*
+        render ตารางครั้งเดียวต่อการ sync
+      */
+
+      renderUserSchedule();
+
+      /*
+        render admin เฉพาะตอนอยู่หน้า admin
+      */
+
+      if (
+        !document
+          .getElementById("adminPage")
+          .classList
+          .contains("hidden")
+      ) {
+        renderAdmin();
+      }
+
+      renderCurrentPlaying();
+
+    } catch (error) {
+
+      console.error(
+        "Load data error:",
+        error
+      );
+
+    } finally {
+
+      isLoading = false;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     DATA HELPERS
+  ===================================================== */
+
+  function getMusician(id) {
+
+    return appData.musicians.find(
+      musician =>
+        String(musician.id) ===
+        String(id)
+    );
+
+  }
+
+
+  function getVenue(id) {
+
+    return appData.venues.find(
+      venue =>
+        String(venue.id) ===
+        String(id)
+    );
+
+  }
+
+
+  function normalizeDate(value) {
+
+    if (!value) {
+      return "";
+    }
+
+    const valueString =
+      String(value);
+
+    if (
+      /^\d{4}-\d{2}-\d{2}$/
+        .test(valueString)
+    ) {
+      return valueString;
+    }
+
+    if (
+      valueString.includes("T")
+    ) {
+      return valueString.split("T")[0];
+    }
+
+    return valueString.substring(
+      0,
+      10
+    );
+
+  }
+
+
+  function timeToMinutes(time) {
+
+    if (!time) {
+      return 0;
+    }
+
+    const parts =
+      String(time).split(":");
+
+    return (
+      (Number(parts[0]) || 0) * 60 +
+      (Number(parts[1]) || 0)
+    );
+
+  }
+
+
+  /* =====================================================
+     WEEKLY
+  ===================================================== */
+
+  function scheduleAppliesToDate(
+    schedule,
+    dateString
+  ) {
+
+    const repeat =
+      String(
+        schedule.repeat || "once"
+      ).toLowerCase();
+
+    const scheduleDate =
+      normalizeDate(
+        schedule.date
+      );
+
+    if (!scheduleDate) {
+      return false;
+    }
+
+    if (repeat === "once") {
+
+      return (
+        scheduleDate ===
+        dateString
+      );
+
+    }
+
+    if (repeat === "weekly") {
+
+      const start =
+        parseDate(scheduleDate);
+
+      const target =
+        parseDate(dateString);
+
+      if (target < start) {
+        return false;
+      }
+
+      const difference =
+        Math.round(
+          (
+            target.getTime() -
+            start.getTime()
+          ) /
+          86400000
+        );
+
+      return (
+        difference % 7 === 0
+      );
+
+    }
+
+    return false;
+
+  }
+
+
+  function getSchedulesForDate(
+    dateString
+  ) {
+
+    return appData.schedules
+      .filter(schedule =>
+        scheduleAppliesToDate(
+          schedule,
+          dateString
+        )
+      )
+      .sort(
+        (a,b) =>
+          timeToMinutes(a.start) -
+          timeToMinutes(b.start)
+      );
+
+  }
+
+
+  function getFutureDays() {
+
+    const result = [];
+
+    const today =
+      new Date();
+
+    for (
+      let i = 0;
+      i < DISPLAY_DAYS;
+      i++
+    ) {
+
+      const date =
+        addDays(today, i);
+
+      const dateString =
+        getLocalDateString(date);
+
+      const schedules =
+        getSchedulesForDate(
+          dateString
+        );
+
+      if (!schedules.length) {
+        continue;
+      }
+
+      result.push({
+        date,
+        dateString,
+        schedules
+      });
+
+    }
+
+    return result;
+
+  }
+
+
+  /* =====================================================
+     CURRENT PLAYING
+  ===================================================== */
+
+  function getCurrentSchedule() {
+
+    const today =
+      getLocalDateString();
+
+    const schedules =
+      getSchedulesForDate(today);
+
+    const now =
+      new Date();
+
+    const currentMinutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+    for (const schedule of schedules) {
+
+      let start =
+        timeToMinutes(
+          schedule.start
+        );
+
+      let end =
+        timeToMinutes(
+          schedule.end
+        );
+
+      if (end <= start) {
+        end += 1440;
+      }
+
+      let checkMinutes =
+        currentMinutes;
+
+      if (
+        currentMinutes < start &&
+        end > 1440
+      ) {
+        checkMinutes += 1440;
+      }
+
+      if (
+        checkMinutes >= start &&
+        checkMinutes < end
+      ) {
+        return schedule;
+      }
+
+    }
+
+    /*
+      รองรับงานเมื่อคืน
+      เช่น 22:00 - 02:00
+    */
+
+    const yesterday =
+      getLocalDateString(
+        addDays(new Date(), -1)
+      );
+
+    const yesterdaySchedules =
+      getSchedulesForDate(
+        yesterday
+      );
+
+    if (currentMinutes < 360) {
+
+      for (
+        const schedule
+        of yesterdaySchedules
+      ) {
+
+        const start =
+          timeToMinutes(
+            schedule.start
+          );
+
+        let end =
+          timeToMinutes(
+            schedule.end
+          );
+
+        if (end <= start) {
+          end += 1440;
+        }
+
+        if (
+          start < 1440 &&
+          end > 1440 &&
+          currentMinutes + 1440 >= start &&
+          currentMinutes + 1440 < end
+        ) {
+          return schedule;
+        }
+
+      }
+
+    }
+
+    return null;
+
+  }
+
+
+  /* =====================================================
+     CURRENT CARD
+  ===================================================== */
+
+  function renderCurrentPlaying() {
+
+    const current =
+      getCurrentSchedule();
+
+    const musicianEl =
+      document.getElementById(
+        "currentMusician"
+      );
+
+    const venueEl =
+      document.getElementById(
+        "currentVenue"
+      );
+
+    const timeEl =
+      document.getElementById(
+        "currentTime"
+      );
+
+    if (!current) {
+
+      musicianEl.textContent =
+        "🎵 ไม่มีการแสดงตอนนี้";
+
+      venueEl.textContent =
+        "รอตารางการแสดงถัดไป";
+
+      timeEl.textContent = "";
+
+      return;
+
+    }
+
+    const musician =
+      getMusician(
+        current.musician_id
+      );
+
+    const venue =
+      getVenue(
+        current.venue_id
+      );
+
+    musicianEl.textContent =
+      musician
+        ? musician.name
+        : "ไม่ทราบชื่อ";
+
+    venueEl.textContent =
+      venue
+        ? `📍 ${venue.name}`
+        : "";
+
+    timeEl.textContent =
+      `${current.start} - ${current.end}`;
+
+  }
+
+
+  /* =====================================================
+     USER SCHEDULE
+  ===================================================== */
+
+  function renderUserSchedule() {
+
+    const container =
+      document.getElementById(
+        "scheduleList"
+      );
+
+    const days =
+      getFutureDays();
+
+    if (!days.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          📭 ยังไม่มีตารางการแสดง
+        </div>
+      `;
+
+      return;
+
+    }
+
+    let html = "";
+
+    for (const day of days) {
+
+      const isToday =
+        day.dateString ===
+        getLocalDateString();
+
+      html += `
+        <section class="day-section">
+
+          <div class="day-header ${
+            isToday ? "today" : ""
+          }">
+
+            <div class="day-title">
+              ${
+                isToday
+                  ? "🔴 วันนี้ — "
+                  : ""
+              }
+
+              ${escapeHtml(
+                formatThaiDate(
+                  day.dateString
+                )
+              )}
+            </div>
+
+            <div class="day-subtitle">
+              ${day.schedules.length}
+              รายการ
+            </div>
+
+          </div>
+
+          <div class="schedule-list">
+      `;
+
+      html += day.schedules
+        .map(schedule =>
+          renderScheduleCard(
+            schedule,
+            day.dateString
+          )
+        )
+        .join("");
+
+      html += `
+          </div>
+        </section>
+      `;
+
+    }
+
+    container.innerHTML =
+      html;
+
+  }
+
+
+  /* =====================================================
+     SCHEDULE CARD
+  ===================================================== */
+
+  function renderScheduleCard(
+    schedule,
+    dateString
+  ) {
+
+    const musician =
+      getMusician(
+        schedule.musician_id
+      );
+
+    const venue =
+      getVenue(
+        schedule.venue_id
+      );
+
+    const isToday =
+      dateString ===
+      getLocalDateString();
+
+    const status =
+      isToday
+        ? getScheduleStatus(schedule)
+        : "upcoming";
+
+    const repeat =
+      String(
+        schedule.repeat || "once"
+      ).toLowerCase();
+
+    return `
+      <div
+        class="schedule-card ${
+          status === "playing"
+            ? "playing"
+            : ""
+        }"
+        data-schedule-id="${escapeHtml(
+          String(schedule.id)
+        )}"
+        data-date="${escapeHtml(
+          dateString
+        )}">
+
+        <div class="schedule-info">
+
+          <div class="schedule-time">
+
+            🕐
+            ${escapeHtml(
+              schedule.start
+            )}
+            -
+            ${escapeHtml(
+              schedule.end
+            )}
+
+          </div>
+
+          <div class="schedule-musician">
+
+            🎤
+            ${escapeHtml(
+              musician
+                ? musician.name
+                : "ไม่ทราบชื่อ"
+            )}
+
+          </div>
+
+          <div class="schedule-venue">
+
+            📍
+            ${escapeHtml(
+              venue
+                ? venue.name
+                : "ไม่ทราบสถานที่"
+            )}
+
+          </div>
+
+          <span class="repeat-label">
+
+            ${
+              repeat === "weekly"
+                ? "🔁 ทุกสัปดาห์"
+                : "📅 ครั้งเดียว"
+            }
+
+          </span>
+
+        </div>
+
+        <div class="status-container">
+
+          ${getStatusBadge(status)}
+
+        </div>
+
+      </div>
+    `;
+
+  }
+
+
+  /* =====================================================
+     STATUS
+  ===================================================== */
+
+  function getScheduleStatus(
+    schedule
+  ) {
+
+    const now =
+      new Date();
+
+    const currentMinutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+    let start =
+      timeToMinutes(
+        schedule.start
+      );
+
+    let end =
+      timeToMinutes(
+        schedule.end
+      );
+
+    if (end <= start) {
+      end += 1440;
+    }
+
+    let checkMinutes =
+      currentMinutes;
+
+    if (
+      currentMinutes < start &&
+      end > 1440
+    ) {
+      checkMinutes += 1440;
+    }
+
+    if (
+      checkMinutes >= start &&
+      checkMinutes < end
+    ) {
+      return "playing";
+    }
+
+    if (checkMinutes < start) {
+      return "upcoming";
+    }
+
+    return "finished";
+
+  }
+
+
+  function getStatusBadge(status) {
+
+    if (status === "playing") {
+
+      return `
+        <span class="badge badge-playing">
+          🔴 กำลังเล่น
+        </span>
+      `;
+
+    }
+
+    if (status === "upcoming") {
+
+      return `
+        <span class="badge badge-upcoming">
+          ⏳ รอเล่น
+        </span>
+      `;
+
+    }
+
+    return `
+      <span class="badge badge-finished">
+        ✓ จบแล้ว
+      </span>
+    `;
+
+  }
+
+
+  /*
+    สำคัญ:
+    ไม่ render ตารางทั้งหมดใหม่ทุก 1 วินาที
+  */
+
+  function updateScheduleStatuses() {
+
+    const today =
+      getLocalDateString();
+
+    const cards =
+      document.querySelectorAll(
+        `.schedule-card[data-date="${today}"]`
+      );
+
+    cards.forEach(card => {
+
+      const id =
+        card.dataset.scheduleId;
+
+      const schedule =
+        appData.schedules.find(
+          s =>
+            String(s.id) ===
+            String(id)
+        );
+
+      if (!schedule) {
+        return;
+      }
+
+      const status =
+        getScheduleStatus(
+          schedule
+        );
+
+      const shouldPlaying =
+        status === "playing";
+
+      card.classList.toggle(
+        "playing",
+        shouldPlaying
+      );
+
+      const badge =
+        card.querySelector(
+          ".status-container"
+        );
+
+      if (badge) {
+        badge.innerHTML =
+          getStatusBadge(status);
+      }
+
+    });
+
+  }
+
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
+
+  function showLogin() {
+
+    document
+      .getElementById("userPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("loginPage")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("adminButton")
+      .classList.add("hidden");
+
+    document
+      .getElementById("userButton")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("logoutButton")
+      .classList.add("hidden");
+
+  }
+
+
+  async function login() {
+
+    if (isSaving) {
+      return;
+    }
+
+    const username =
+      document
+        .getElementById(
+          "loginUsername"
+        )
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById(
+          "loginPassword"
+        )
+        .value;
+
+    const errorEl =
+      document.getElementById(
+        "loginError"
+      );
+
+    const button =
+      document.getElementById(
+        "loginButton"
+      );
+
+    errorEl.textContent = "";
+
+    if (!username || !password) {
+
+      errorEl.textContent =
+        "กรุณากรอก Username และ Password";
+
+      return;
+
+    }
+
+    isSaving = true;
+    button.disabled = true;
+    button.textContent =
+      "กำลังเข้าสู่ระบบ...";
+
+    try {
+
+      const result =
+        await postData({
+          action: "login",
+          username,
+          password
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        localStorage.setItem(
+          "music_admin",
+          "true"
+        );
+
+        localStorage.setItem(
+          "music_admin_user",
+          username
+        );
+
+        showAdmin();
+
+      } else {
+
+        errorEl.textContent =
+          result.error ||
+          result.message ||
+          "Username หรือ Password ไม่ถูกต้อง";
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      errorEl.textContent =
+        "ไม่สามารถเชื่อมต่อ Server ได้";
+
+    } finally {
+
+      isSaving = false;
+
+      button.disabled = false;
+
+      button.textContent =
+        "เข้าสู่ระบบ";
+
+    }
+
+  }
+
+
+  function checkLogin() {
+
+    const loggedIn =
+      localStorage.getItem(
+        "music_admin"
+      ) === "true";
+
+    if (loggedIn) {
+      showAdmin();
+    } else {
+      showUserPage();
+    }
+
+  }
+
+
+  function showUserPage() {
+
+    document
+      .getElementById("userPage")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("loginPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminButton")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("userButton")
+      .classList.add("hidden");
+
+    document
+      .getElementById("logoutButton")
+      .classList.add("hidden");
+
+    renderUserSchedule();
+    renderCurrentPlaying();
+
+  }
+
+
+  function showAdmin() {
+
+    const loggedIn =
+      localStorage.getItem(
+        "music_admin"
+      ) === "true";
+
+    if (!loggedIn) {
+      showLogin();
+      return;
+    }
+
+    document
+      .getElementById("userPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("loginPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminPage")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("adminButton")
+      .classList.add("hidden");
+
+    document
+      .getElementById("userButton")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("logoutButton")
+      .classList.remove("hidden");
+
+    const username =
+      localStorage.getItem(
+        "music_admin_user"
+      );
+
+    document.getElementById(
+      "adminWelcome"
+    ).textContent =
+      username
+        ? `เข้าสู่ระบบเป็น: ${username}`
+        : "Admin";
+
+    renderAdmin();
+
+  }
+
+
+  function logout() {
+
+    localStorage.removeItem(
+      "music_admin"
+    );
+
+    localStorage.removeItem(
+      "music_admin_user"
+    );
+
+    showUserPage();
+
+  }
+
+
+  /* =====================================================
+     CREATE SCHEDULE
+  ===================================================== */
+
+  async function createSchedule() {
+
+    if (isSaving) {
+      return;
+    }
+
+    const button =
+      document.getElementById(
+        "createScheduleButton"
+      );
+
+    const repeat =
+      document.getElementById(
+        "scheduleRepeat"
+      ).value;
+
+    const date =
+      document.getElementById(
+        "scheduleDate"
+      ).value;
+
+    const musician_id =
+      document.getElementById(
+        "scheduleMusician"
+      ).value;
+
+    const venue_id =
+      document.getElementById(
+        "scheduleVenue"
+      ).value;
+
+    const start =
+      document.getElementById(
+        "scheduleStart"
+      ).value;
+
+    const end =
+      document.getElementById(
+        "scheduleEnd"
+      ).value;
+
+    if (!date) {
+      alert("กรุณาเลือกวันที่");
+      return;
+    }
+
+    if (
+      repeat !== "weekly" &&
+      repeat !== "once"
+    ) {
+      alert("รูปแบบตารางไม่ถูกต้อง");
+      return;
+    }
+
+    if (
+      !musician_id ||
+      !venue_id ||
+      !start ||
+      !end
+    ) {
+      alert("กรุณากรอกข้อมูลให้ครบ");
+      return;
+    }
+
+    isSaving = true;
+
+    button.disabled = true;
+    button.textContent =
+      "⏳ กำลังบันทึก...";
+
+    try {
+
+      const result =
+        await postData({
+          action: "createSchedule",
+          date,
+          musician_id,
+          venue_id,
+          start,
+          end,
+          repeat
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        /*
+          FAST:
+          ไม่ loadData()
+          ใช้ข้อมูลที่ API ส่งกลับมา
+        */
+
+        if (result.schedule) {
+
+          appData.schedules.push(
+            result.schedule
+          );
+
+        }
+
+        renderUserSchedule();
+        renderCurrentPlaying();
+        renderAdmin();
+
+        document.getElementById(
+          "scheduleStart"
+        ).value = "";
+
+        document.getElementById(
+          "scheduleEnd"
+        ).value = "";
+
+        alert(
+          "เพิ่มตารางเรียบร้อยแล้ว"
+        );
+
+      } else {
+
+        alert(
+          result.message ||
+          result.error ||
+          "เพิ่มตารางไม่สำเร็จ"
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "เกิดข้อผิดพลาดในการเพิ่มตาราง"
+      );
+
+    } finally {
+
+      isSaving = false;
+
+      button.disabled = false;
+
+      button.textContent =
+        "➕ เพิ่มตาราง";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     EDIT
+  ===================================================== */
+
+  async function editSchedule(id) {
+
+    if (isSaving) {
+      return;
+    }
+
+    const schedule =
+      appData.schedules.find(
+        s =>
+          String(s.id) ===
+          String(id)
+      );
+
+    if (!schedule) {
+
+      alert(
+        "ไม่พบข้อมูลตาราง"
+      );
+
+      return;
+
+    }
+
+    const repeat =
+      prompt(
+        "รูปแบบ: weekly = ทุกสัปดาห์, once = ครั้งเดียว",
+        String(
+          schedule.repeat || "once"
+        ).toLowerCase()
+      );
+
+    if (repeat === null) {
+      return;
+    }
+
+    const normalizedRepeat =
+      repeat
+        .toLowerCase()
+        .trim();
+
+    if (
+      normalizedRepeat !== "weekly" &&
+      normalizedRepeat !== "once"
+    ) {
+
+      alert(
+        "กรุณาใส่ weekly หรือ once"
+      );
+
+      return;
+
+    }
+
+    const date =
+      prompt(
+        "วันที่เริ่มต้น (YYYY-MM-DD)",
+        normalizeDate(
+          schedule.date
+        )
+      );
+
+    if (date === null) {
+      return;
+    }
+
+    const start =
+      prompt(
+        "เวลาเริ่ม (HH:MM)",
+        schedule.start
+      );
+
+    if (start === null) {
+      return;
+    }
+
+    const end =
+      prompt(
+        "เวลาจบ (HH:MM)",
+        schedule.end
+      );
+
+    if (end === null) {
+      return;
+    }
+
+    const musician_id =
+      prompt(
+        "Musician ID",
+        schedule.musician_id
+      );
+
+    if (musician_id === null) {
+      return;
+    }
+
+    const venue_id =
+      prompt(
+        "Venue ID",
+        schedule.venue_id
+      );
+
+    if (venue_id === null) {
+      return;
+    }
+
+    isSaving = true;
+
+    try {
+
+      const result =
+        await postData({
+          action: "updateSchedule",
+          id,
+          date,
+          musician_id,
+          venue_id,
+          start,
+          end,
+          repeat:
+            normalizedRepeat
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        /*
+          FAST:
+          update object เดิม
+        */
+
+        const index =
+          appData.schedules.findIndex(
+            s =>
+              String(s.id) ===
+              String(id)
+          );
+
+        if (
+          index !== -1 &&
+          result.schedule
+        ) {
+
+          appData.schedules[index] =
+            result.schedule;
+
+        }
+
+        renderUserSchedule();
+        renderCurrentPlaying();
+        renderAdmin();
+
+        alert(
+          "แก้ไขเรียบร้อยแล้ว"
+        );
+
+      } else {
+
+        alert(
+          result.message ||
+          result.error ||
+          "แก้ไขไม่สำเร็จ"
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "เกิดข้อผิดพลาด"
+      );
+
+    } finally {
+
+      isSaving = false;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     DELETE
+  ===================================================== */
+
+  async function deleteSchedule(id) {
+
+    if (isSaving) {
+      return;
+    }
+
+    if (
+      !confirm(
+        `ต้องการลบตาราง ID ${id} ใช่หรือไม่?`
+      )
+    ) {
+      return;
+    }
+
+    isSaving = true;
+
+    try {
+
+      const result =
+        await postData({
+          action: "deleteSchedule",
+          id
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        /*
+          FAST:
+          ไม่ reload Sheet
+        */
+
+        appData.schedules =
+          appData.schedules.filter(
+            schedule =>
+              String(schedule.id) !==
+              String(id)
+          );
+
+        renderUserSchedule();
+        renderCurrentPlaying();
+        renderAdmin();
+
+        alert(
+          "ลบเรียบร้อยแล้ว"
+        );
+
+      } else {
+
+        alert(
+          result.message ||
+          result.error ||
+          "ลบไม่สำเร็จ"
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "เกิดข้อผิดพลาด"
+      );
+
+    } finally {
+
+      isSaving = false;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     MUSICIAN
+  ===================================================== */
+
+  async function createMusician() {
+
+    if (isSaving) {
+      return;
+    }
+
+    const name =
+      document
+        .getElementById(
+          "musicianName"
+        )
+        .value
+        .trim();
+
+    const instrument =
+      document
+        .getElementById(
+          "musicianInstrument"
+        )
+        .value
+        .trim();
+
+    if (!name) {
+
+      alert(
+        "กรุณากรอกชื่อนักดนตรี"
+      );
+
+      return;
+
+    }
+
+    const button =
+      document.getElementById(
+        "createMusicianButton"
+      );
+
+    isSaving = true;
+
+    button.disabled = true;
+    button.textContent =
+      "⏳ กำลังบันทึก...";
+
+    try {
+
+      const result =
+        await postData({
+          action: "createMusician",
+          name,
+          instrument
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        if (result.musician) {
+
+          appData.musicians.push(
+            result.musician
+          );
+
+        }
+
+        document.getElementById(
+          "musicianName"
+        ).value = "";
+
+        document.getElementById(
+          "musicianInstrument"
+        ).value = "";
+
+        renderMusicians();
+        populateSelects();
+        renderUserSchedule();
+
+        alert(
+          "เพิ่มนักดนตรีเรียบร้อยแล้ว"
+        );
+
+      } else {
+
+        alert(
+          result.message ||
+          result.error ||
+          "เพิ่มนักดนตรีไม่สำเร็จ"
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "เกิดข้อผิดพลาด"
+      );
+
+    } finally {
+
+      isSaving = false;
+
+      button.disabled = false;
+
+      button.textContent =
+        "➕ เพิ่มนักดนตรี";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     VENUE
+  ===================================================== */
+
+  async function createVenue() {
+
+    if (isSaving) {
+      return;
+    }
+
+    const name =
+      document
+        .getElementById(
+          "venueName"
+        )
+        .value
+        .trim();
+
+    const address =
+      document
+        .getElementById(
+          "venueAddress"
+        )
+        .value
+        .trim();
+
+    if (!name) {
+
+      alert(
+        "กรุณากรอกชื่อสถานที่"
+      );
+
+      return;
+
+    }
+
+    const button =
+      document.getElementById(
+        "createVenueButton"
+      );
+
+    isSaving = true;
+
+    button.disabled = true;
+    button.textContent =
+      "⏳ กำลังบันทึก...";
+
+    try {
+
+      const result =
+        await postData({
+          action: "createVenue",
+          name,
+          address
+        });
+
+      if (
+        result.success ||
+        result.status === "success"
+      ) {
+
+        if (result.venue) {
+
+          appData.venues.push(
+            result.venue
+          );
+
+        }
+
+        document.getElementById(
+          "venueName"
+        ).value = "";
+
+        document.getElementById(
+          "venueAddress"
+        ).value = "";
+
+        renderVenues();
+        populateSelects();
+        renderUserSchedule();
+
+        alert(
+          "เพิ่มสถานที่เรียบร้อยแล้ว"
+        );
+
+      } else {
+
+        alert(
+          result.message ||
+          result.error ||
+          "เพิ่มสถานที่ไม่สำเร็จ"
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "เกิดข้อผิดพลาด"
+      );
+
+    } finally {
+
+      isSaving = false;
+
+      button.disabled = false;
+
+      button.textContent =
+        "➕ เพิ่มสถานที่";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     POST
+  ===================================================== */
+
+  async function postData(data) {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+
+    }
+
+    return await response.json();
+
+  }
+
+
+  /* =====================================================
+     ADMIN RENDER
+  ===================================================== */
+
+  function renderAdmin() {
+
+    renderAdminSchedules();
+
+    renderMusicians();
+
+    renderVenues();
+
+    populateSelects();
+
+  }
+
+
+  /* =====================================================
+     ADMIN SCHEDULE
+  ===================================================== */
+
+  function renderAdminSchedules() {
+
+    const tbody =
+      document.getElementById(
+        "adminScheduleTable"
+      );
+
+    if (!appData.schedules.length) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            ยังไม่มีข้อมูล
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+    const schedules =
+      [...appData.schedules].sort(
+        (a,b) => {
+
+          const dateA =
+            normalizeDate(a.date);
+
+          const dateB =
+            normalizeDate(b.date);
+
+          if (
+            dateA !== dateB
+          ) {
+
+            return dateA.localeCompare(
+              dateB
+            );
+
+          }
+
+          return (
+            timeToMinutes(a.start) -
+            timeToMinutes(b.start)
+          );
+
+        }
+      );
+
+    tbody.innerHTML =
+      schedules.map(
+        schedule => {
+
+          const musician =
+            getMusician(
+              schedule.musician_id
+            );
+
+          const venue =
+            getVenue(
+              schedule.venue_id
+            );
+
+          const repeat =
+            String(
+              schedule.repeat || "once"
+            ).toLowerCase();
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHtml(
+                  schedule.id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  normalizeDate(
+                    schedule.date
+                  )
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  musician
+                    ? musician.name
+                    : schedule.musician_id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  venue
+                    ? venue.name
+                    : schedule.venue_id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  schedule.start
+                )}
+                -
+                ${escapeHtml(
+                  schedule.end
+                )}
+              </td>
+
+              <td>
+
+                ${
+                  repeat === "weekly"
+                    ? `
+                      <span class="badge badge-next">
+                        🔁 ทุกสัปดาห์
+                      </span>
+                    `
+                    : `
+                      <span class="badge badge-finished">
+                        📅 ครั้งเดียว
+                      </span>
+                    `
+                }
+
+              </td>
+
+              <td>
+
+                <div class="table-actions">
+
+                  <button
+                    class="btn-warning small-btn"
+                    onclick="editSchedule('${escapeHtml(
+                      String(schedule.id)
+                    )}')">
+
+                    ✏️ แก้ไข
+
+                  </button>
+
+                  <button
+                    class="btn-danger small-btn"
+                    onclick="deleteSchedule('${escapeHtml(
+                      String(schedule.id)
+                    )}')">
+
+                    🗑️ ลบ
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+          `;
+
+        }
+      ).join("");
+
+  }
+
+
+  /* =====================================================
+     MUSICIAN TABLE
+  ===================================================== */
+
+  function renderMusicians() {
+
+    const tbody =
+      document.getElementById(
+        "musicianTable"
+      );
+
+    if (!appData.musicians.length) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3">
+            ยังไม่มีข้อมูล
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+    tbody.innerHTML =
+      appData.musicians
+        .map(
+          musician => `
+            <tr>
+
+              <td>
+                ${escapeHtml(
+                  musician.id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  musician.name
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  musician.instrument || ""
+                )}
+              </td>
+
+            </tr>
+          `
+        )
+        .join("");
+
+  }
+
+
+  /* =====================================================
+     VENUE TABLE
+  ===================================================== */
+
+  function renderVenues() {
+
+    const tbody =
+      document.getElementById(
+        "venueTable"
+      );
+
+    if (!appData.venues.length) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3">
+            ยังไม่มีข้อมูล
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+    tbody.innerHTML =
+      appData.venues
+        .map(
+          venue => `
+            <tr>
+
+              <td>
+                ${escapeHtml(
+                  venue.id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  venue.name
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  venue.address || ""
+                )}
+              </td>
+
+            </tr>
+          `
+        )
+        .join("");
+
+  }
+
+
+  /* =====================================================
+     SELECT
+  ===================================================== */
+
+  function populateSelects() {
+
+    const musicianSelect =
+      document.getElementById(
+        "scheduleMusician"
+      );
+
+    const venueSelect =
+      document.getElementById(
+        "scheduleVenue"
+      );
+
+    const currentMusician =
+      musicianSelect.value;
+
+    const currentVenue =
+      venueSelect.value;
+
+    musicianSelect.innerHTML =
+      `
+        <option value="">
+          -- เลือกนักดนตรี --
+        </option>
+
+        ${
+          appData.musicians
+            .map(
+              musician => `
+                <option
+                  value="${escapeHtml(
+                    String(musician.id)
+                  )}">
+
+                  ${escapeHtml(
+                    musician.name
+                  )}
+
+                </option>
+              `
+            )
+            .join("")
+        }
+      `;
+
+    venueSelect.innerHTML =
+      `
+        <option value="">
+          -- เลือกสถานที่ --
+        </option>
+
+        ${
+          appData.venues
+            .map(
+              venue => `
+                <option
+                  value="${escapeHtml(
+                    String(venue.id)
+                  )}">
+
+                  ${escapeHtml(
+                    venue.name
+                  )}
+
+                </option>
+              `
+            )
+            .join("")
+        }
+      `;
+
+    if (
+      [
+        ...musicianSelect.options
+      ].some(
+        option =>
+          option.value ===
+          currentMusician
+      )
+    ) {
+      musicianSelect.value =
+        currentMusician;
+    }
+
+    if (
+      [
+        ...venueSelect.options
+      ].some(
+        option =>
+          option.value ===
+          currentVenue
+      )
+    ) {
+      venueSelect.value =
+        currentVenue;
+    }
+
+  }
+
+
+  /* =====================================================
+     ESCAPE
+  ===================================================== */
+
+  function escapeHtml(value) {
+
+    if (
+      value === null ||
+      value === undefined
+    ) {
+      return "";
+    }
+
+    return String(value)
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+</script>
+
+</body>
+</html>
