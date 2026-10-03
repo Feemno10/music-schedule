@@ -2642,12 +2642,12 @@ input::placeholder {
       isToday
         ? getScheduleStatus(schedule)
         : "upcoming";
+        
+const displayStart =
+  normalizeScheduleTime(schedule.start);
 
-    const displayStart =
-      normalizeScheduleTime(displayStart);
-
-    const displayEnd =
-      normalizeScheduleTime(displayEnd);
+const displayEnd =
+  normalizeScheduleTime(schedule.end);
 
     const repeat =
       String(
