@@ -1827,7 +1827,7 @@ input::placeholder {
   ===================================================== */
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbx-B9qzEXadC4C1CAaVpHq1wp8aW9OVFNUQyxhpv2TnD5uLO8N0ftDPQWKCpfyESwrF/exec";
+    "https://script.google.com/macros/s/AKfycbxhVaAMaT7qPw1fY1hsmJpo3fPeGaY2_5ObxZoDpbYSxXi2p44RCZRjoRB5BzJ3ZEq1/exec";
 
   /*
     จากเดิม 10 วินาที
@@ -2053,6 +2053,12 @@ input::placeholder {
           ? data.schedules
           : [];
 
+      /*
+        สำคัญ: normalize เวลาอีกครั้งทันทีหลัง API ตอบกลับ
+        เพื่อให้ frontend ใช้ HH:mm เท่านั้น
+      */
+      normalizeAllScheduleTimes();
+
       appData.musicians =
         Array.isArray(data.musicians)
           ? data.musicians
@@ -2162,18 +2168,64 @@ input::placeholder {
   }
 
 
+  /* =====================================================
+     TIME HELPERS
+     สำคัญ: เวลาในตารางเป็น STRING HH:mm เท่านั้น
+     ห้ามแปลง start/end ผ่าน Date เพราะจะโดน timezone ได้
+  ===================================================== */
+
+  function normalizeScheduleTime(value) {
+
+    if (value === null || value === undefined || value === "") {
+      return "";
+    }
+
+    const raw = String(value).trim();
+
+    /* รองรับ HH:mm:ss -> HH:mm */
+    const match = raw.match(/^(\d{1,2}):(\d{2})(?::\d{2})?/);
+
+    if (!match) {
+      return raw;
+    }
+
+    const hour = Number(match[1]);
+    const minute = Number(match[2]);
+
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return "";
+    }
+
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+
+  }
+
+
+  function normalizeAllScheduleTimes() {
+
+    appData.schedules = appData.schedules.map(schedule => ({
+      ...schedule,
+      start: normalizeScheduleTime(schedule.start),
+      end: normalizeScheduleTime(schedule.end)
+    }));
+
+  }
+
+
   function timeToMinutes(time) {
 
-    if (!time) {
+    const normalized =
+      normalizeScheduleTime(time);
+
+    if (!normalized) {
       return 0;
     }
 
-    const parts =
-      String(time).split(":");
+    const parts = normalized.split(":");
 
     return (
-      (Number(parts[0]) || 0) * 60 +
-      (Number(parts[1]) || 0)
+      Number(parts[0]) * 60 +
+      Number(parts[1])
     );
 
   }
@@ -2471,7 +2523,7 @@ input::placeholder {
         : "";
 
     timeEl.textContent =
-      `${current.start} - ${current.end}`;
+      `${normalizeScheduleTime(current.start)} - ${normalizeScheduleTime(current.end)}`;
 
   }
 
@@ -2591,6 +2643,12 @@ input::placeholder {
         ? getScheduleStatus(schedule)
         : "upcoming";
 
+    const displayStart =
+      normalizeScheduleTime(displayStart);
+
+    const displayEnd =
+      normalizeScheduleTime(displayEnd);
+
     const repeat =
       String(
         schedule.repeat || "once"
@@ -2616,11 +2674,11 @@ input::placeholder {
 
             🕐
             ${escapeHtml(
-              schedule.start
+              displayStart
             )}
             -
             ${escapeHtml(
-              schedule.end
+              displayEnd
             )}
 
           </div>
@@ -2688,12 +2746,12 @@ input::placeholder {
 
     let start =
       timeToMinutes(
-        schedule.start
+        normalizeScheduleTime(schedule.start)
       );
 
     let end =
       timeToMinutes(
-        schedule.end
+        normalizeScheduleTime(schedule.end)
       );
 
     if (end <= start) {
@@ -3104,14 +3162,18 @@ input::placeholder {
       ).value;
 
     const start =
-      document.getElementById(
-        "scheduleStart"
-      ).value;
+      normalizeScheduleTime(
+        document.getElementById(
+          "scheduleStart"
+        ).value
+      );
 
     const end =
-      document.getElementById(
-        "scheduleEnd"
-      ).value;
+      normalizeScheduleTime(
+        document.getElementById(
+          "scheduleEnd"
+        ).value
+      );
 
     if (!date) {
       alert("กรุณาเลือกวันที่");
@@ -3168,9 +3230,11 @@ input::placeholder {
 
         if (result.schedule) {
 
-          appData.schedules.push(
-            result.schedule
-          );
+          appData.schedules.push({
+            ...result.schedule,
+            start: normalizeScheduleTime(result.schedule.start),
+            end: normalizeScheduleTime(result.schedule.end)
+          });
 
         }
 
@@ -3311,6 +3375,17 @@ input::placeholder {
       return;
     }
 
+    const normalizedStart =
+      normalizeScheduleTime(start);
+
+    const normalizedEnd =
+      normalizeScheduleTime(end);
+
+    if (!normalizedStart || !normalizedEnd) {
+      alert("เวลาไม่ถูกต้อง กรุณาใช้รูปแบบ HH:mm");
+      return;
+    }
+
     const musician_id =
       prompt(
         "Musician ID",
@@ -3342,8 +3417,8 @@ input::placeholder {
           date,
           musician_id,
           venue_id,
-          start,
-          end,
+          start: normalizedStart,
+          end: normalizedEnd,
           repeat:
             normalizedRepeat
         });
@@ -3370,8 +3445,11 @@ input::placeholder {
           result.schedule
         ) {
 
-          appData.schedules[index] =
-            result.schedule;
+          appData.schedules[index] = {
+            ...result.schedule,
+            start: normalizeScheduleTime(result.schedule.start),
+            end: normalizeScheduleTime(result.schedule.end)
+          };
 
         }
 
